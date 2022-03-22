@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+    <ClientSideComponentInstance
+        Title="AdobeInsights"
+        Location="ClientSideExtension.ApplicationCustomizer"
+        ComponentId="f0b59feb-e26f-49dc-ba4b-c3a45514b7e7"
+        Properties="{&quot;testMessage&quot;:&quot;Test message&quot;}">
+    </ClientSideComponentInstance>
+</Elements>

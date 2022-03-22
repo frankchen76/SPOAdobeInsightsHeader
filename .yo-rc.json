@@ -1,0 +1,17 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.14.0",
+    "libraryName": "spo-adobe-insights-header",
+    "libraryId": "bdd5fa49-3409-4dd2-92da-7ac3ee9a6b85",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "SPOAdobeInsightsHeader",
+    "solutionShortDescription": "SPOAdobeInsightsHeader description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "extension",
+    "extensionType": "ApplicationCustomizer"
+  }
+}

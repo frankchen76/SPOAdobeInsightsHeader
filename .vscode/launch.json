@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [{
+        "name": "Hosted workbench",
+        "type": "pwa-chrome",
+        "request": "launch",
+        "url": "https://m365x725618.sharepoint.com/sites/SPFxWorkshop-Dev/SitePages/EmbeddedVideo.aspx?debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fmanifests.js&loadSPFX=true&customActions=%7B%22f0b59feb-e26f-49dc-ba4b-c3a45514b7e7%22%3A%7B%22location%22%3A%22ClientSideExtension.ApplicationCustomizer%22%2C%22properties%22%3A%7B%22testMessage%22%3A%22Test+message%22%7D%7D%7D",
+        "webRoot": "${workspaceRoot}",
+        "sourceMaps": true,
+        "sourceMapPathOverrides": {
+            "webpack:///.././src/*": "${webRoot}/src/*",
+            "webpack:///../../../src/*": "${webRoot}/src/*",
+            "webpack:///../../../../src/*": "${webRoot}/src/*",
+            "webpack:///../../../../../src/*": "${webRoot}/src/*"
+        },
+        "runtimeArgs": [
+            "--remote-debugging-port=9222",
+            "--harmony",
+            "--incognito"
+        ]
+    }]
+}
