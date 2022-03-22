@@ -2,7 +2,10 @@
 
 ## Summary
 
-Short summary on functionality and used technologies.
+SPFx extension to get the below information for a page
+* Current page
+* File viewer web included Video file
+* Current user's info
 
 [picture of the solution in action, if possible]
 
