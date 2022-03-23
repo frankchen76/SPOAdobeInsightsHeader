@@ -5,6 +5,7 @@ import { IWebAddResult } from "@pnp/sp/webs"; import "@pnp/sp/webs";
 import "@pnp/sp/clientside-pages/web";
 import "@pnp/sp/webs";
 import "@pnp/sp/profiles";
+import "@pnp/sp/folders";
 import { Web } from "@pnp/sp/webs";
 import { ClientsideWebpart, IClientsidePage } from '@pnp/sp/clientside-pages';
 import { AssignFrom } from "@pnp/core";
@@ -31,18 +32,30 @@ export class InsightService {
             videoFileUrl: "",
             VideoFileViews: 0
         };
-        const sp = getSP();
+        let sp: SPFI = getSP();
         const result = await sp.web();
-        const currentPageUrl = new URL(window.location.href);
-        ret.pageUrl = currentPageUrl.origin + currentPageUrl.pathname;
+        const currentPageUrlObj = new URL(window.location.href);
+        let currentPageUrl = currentPageUrlObj.origin + currentPageUrlObj.pathname;
+
+        if (currentPageUrl.toLocaleLowerCase().indexOf(".aspx") == -1) {
+            // home page for the site. 
+            const currentSP = getSP();
+            sp = spfi(currentPageUrl).using(AssignFrom(currentSP.web));
+            // get home page
+            const rootFolder = await sp.web.rootFolder();
+            currentPageUrl = `${currentPageUrl}/${rootFolder.WelcomePage}`;
+        }
+
+        ret.pageUrl = currentPageUrl;
         // get current page like info
-        const currentPageFile = await sp.web.getFileByServerRelativePath(currentPageUrl.pathname);
+        //const currentPageFile = await sp.web.getFileByServerRelativePath(currentPageUrlObj.pathname);
+        const currentPageFile = await sp.web.getFileByUrl(currentPageUrl);
         const currentPageListItem = await currentPageFile.getItem();
         const likeInfo = await currentPageListItem.getLikedByInformation();
         ret.likeCount = likeInfo.likeCount;
 
         // Find File Viewer web part. 
-        const page: IClientsidePage = await sp.web.loadClientsidePage(currentPageUrl.pathname);
+        const page: IClientsidePage = await sp.web.loadClientsidePage(new URL(currentPageUrl).pathname);
         const ctrlFileViewer = page.findControl<ClientsideWebpart>((c: ClientsideWebpart) => {
             let ret = false;
             const wp = new FileViewerWebpart(c);
@@ -54,14 +67,16 @@ export class InsightService {
             const wp = new FileViewerWebpart(ctrlFileViewer);
             if (wp.EmbeddedFileType == "mp4") {
                 ret.videoFileUrl = wp.EmbeddedFileUrl;
-                const videoUrl = new URL(wp.EmbeddedFileUrl);
-                const videoSCUrl = `${videoUrl.origin}/${videoUrl.pathname.split("/")[1]}/${videoUrl.pathname.split("/")[2]}`;
+                const videoUrlObj = new URL(wp.EmbeddedFileUrl);
+                const videoSCUrl = `${videoUrlObj.origin}/${videoUrlObj.pathname.split("/")[1]}/${videoUrlObj.pathname.split("/")[2]}`;
                 const videoSP = spfi(videoSCUrl).using(AssignFrom(sp.web));
-                const videoFile = await videoSP.web.getFileByUrl(videoUrl.href);
+                const videoFile = await videoSP.web.getFileByUrl(videoUrlObj.href);
                 const videoFileListItem = await videoFile.getItem();
+                const videoParentInfo = await videoFileListItem.getParentInfos();
                 const apiUrl = (videoFileListItem as any)._url;
 
-                const graphUrl = `https://graph.microsoft.com/v1.0/sites/${videoUrl.hostname}:/${videoUrl.pathname.split("/")[1]}/${videoUrl.pathname.split("/")[2]}:/lists/${apiUrl.split("'")[1]}/items/${videoFileListItem["ID"]}/driveItem/analytics/alltime`;
+                // apiUrl.split("'")[1]
+                const graphUrl = `https://graph.microsoft.com/v1.0/sites/${videoUrlObj.hostname}:/${videoUrlObj.pathname.split("/")[1]}/${videoUrlObj.pathname.split("/")[2]}:/lists/${videoParentInfo.ParentList.Id}/items/${videoFileListItem["ID"]}/driveItem/analytics/alltime`;
                 console.log("video file list item:", videoFileListItem);
 
                 const msGraphClient = await this._context.msGraphClientFactory.getClient();
