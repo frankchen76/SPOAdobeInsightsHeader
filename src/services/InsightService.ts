@@ -59,12 +59,14 @@ export class InsightService {
         const ctrlFileViewer = page.findControl<ClientsideWebpart>((c: ClientsideWebpart) => {
             let ret = false;
             const wp = new FileViewerWebpart(c);
+            // TODO: add additional check if multiple FileViewers are included.  // && wp.EmbeddedFileType=="mp4"
             ret = wp.IsFileViewer;
             return ret;
         });
 
         if (ctrlFileViewer) {
             const wp = new FileViewerWebpart(ctrlFileViewer);
+            // TODO: add additional file extensions
             if (wp.EmbeddedFileType == "mp4") {
                 ret.videoFileUrl = wp.EmbeddedFileUrl;
                 const videoUrlObj = new URL(wp.EmbeddedFileUrl);
