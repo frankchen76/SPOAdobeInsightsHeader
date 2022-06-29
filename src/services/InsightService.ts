@@ -32,7 +32,7 @@ export class InsightService {
             videoFileUrl: "",
             VideoFileViews: 0
         };
-        let sp: SPFI = getSP();
+        let sp: SPFI = getSP(this._context);
         const result = await sp.web();
         const currentPageUrlObj = new URL(window.location.href);
         let currentPageUrl = currentPageUrlObj.origin + currentPageUrlObj.pathname;
