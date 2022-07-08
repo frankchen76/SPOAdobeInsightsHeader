@@ -33,7 +33,6 @@ export class InsightService {
             VideoFileViews: 0
         };
         let sp: SPFI = getSP(this._context);
-        const result = await sp.web();
         const currentPageUrlObj = new URL(window.location.href);
         let currentPageUrl = currentPageUrlObj.origin + currentPageUrlObj.pathname;
 
@@ -41,9 +40,10 @@ export class InsightService {
             // home page for the site. 
             const currentSP = getSP();
             sp = spfi(currentPageUrl).using(AssignFrom(currentSP.web));
-            // get home page
-            const rootFolder = await sp.web.rootFolder();
-            currentPageUrl = `${currentPageUrl}/${rootFolder.WelcomePage}`;
+            const web = await sp.web();
+            // get home page. TODO: when user with visitor permission, they will get 401 error
+            //const rootFolder = await sp.web.rootFolder();
+            currentPageUrl = `${web.Url}/${web.WelcomePage}`;
         }
 
         ret.pageUrl = currentPageUrl;
